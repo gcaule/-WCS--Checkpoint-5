@@ -195,8 +195,6 @@ public class MainActivity extends AppCompatActivity {
 
 
                 if (isDepartureOK && isArrivalOK && isDepartureDateOK) {
-                    Toast.makeText(MainActivity.this,
-                            "Todo match !", Toast.LENGTH_SHORT).show();
 
                     String departureBuffer = departureSpinner.getSelectedItem().toString();
                     departureBuffer = departureBuffer.substring(departureBuffer.length() - 5);
@@ -210,9 +208,6 @@ public class MainActivity extends AppCompatActivity {
                     String searchedFlight = resources.getString(R.string.searched_flight, departureBuffer, arrivalBuffer);
 
                     final String flightDate = departureDateValue.getText().toString();
-
-                    Log.d(TAG, "Flight is: " + searchedFlight);
-                    Log.d(TAG, "Date is: " + flightDate);
 
                     DatabaseReference travels = mDatabase.getReference("checkpoint5/travels");
                     travels.orderByChild("travel").equalTo(searchedFlight)
@@ -229,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
 
                                         RecyclerView recyclerView = findViewById(R.id.flightsList);
 
-                                        RecyclerView.Adapter adapter = new FlightsAdapter(mTravelModelList);
+                                        RecyclerView.Adapter adapter = new FlightsAdapter(mTravelModelList, getApplicationContext());
                                         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                                         recyclerView.setLayoutManager(mLayoutManager);
                                         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -242,7 +237,8 @@ public class MainActivity extends AppCompatActivity {
                                 }
 
                             } else {
-                                Toast.makeText(MainActivity.this, "Pas de vol !", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this,
+                                        getString(R.string.search_no_flights), Toast.LENGTH_SHORT).show();
                             }
                         }
 

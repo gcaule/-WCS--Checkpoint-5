@@ -10,11 +10,12 @@
     <string name="search_departure_value">Départ</string>
     <string name="search_arrival_value">Arrivée</string>
 
-    <string name="search_departure_date">Date de départ</string>
-    <string name="search_arrival_date">Date de retour</string>
+    <string name="search_departure_date">Date de départ :</string>
+    <string name="search_arrival_date">Date de retour :</string>
     <string name="search_departure_date_value">Sélectionner une date de départ</string>
 
-    <string name="search_button">Rechercher un itinéraire</string>
+    <string name="search_button">Rechercher un vol</string>
+    <string name="search_no_flights">Aucun vol n\'a été trouvé</string>
 
     <string name="departure_error">Veuillez choisir un aéroport de départ</string>
     <string name="arrival_error">Veuillez choisir un aéroport d\'arrivée</string>
