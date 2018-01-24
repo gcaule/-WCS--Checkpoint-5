@@ -4,6 +4,9 @@ import android.app.DatePickerDialog;
 import android.content.res.Resources;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -32,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     FirebaseDatabase mDatabase;
 
     private static final String TAG = "FDB";
+
+    private List<TravelModel> mTravelModelList = new ArrayList<>();
 
     boolean isDepartureOK = false;
     boolean isArrivalOK = false;
@@ -169,6 +174,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                mTravelModelList.clear();
+
                 if (!isDepartureOK) {
                     Toast.makeText(MainActivity.this,
                             getString(R.string.departure_error), Toast.LENGTH_SHORT).show();
@@ -219,12 +226,18 @@ public class MainActivity extends AppCompatActivity {
                                     TravelModel travel = travelSnapshot.getValue(TravelModel.class);
 
                                     if (travel != null && travel.getDeparture_date().equals(flightDate)) {
-                                        Toast.makeText(MainActivity.this, travel.getPrice(),
-                                                Toast.LENGTH_LONG).show();
 
+                                        RecyclerView recyclerView = findViewById(R.id.flightsList);
 
-                                    } else {
-                                        Toast.makeText(MainActivity.this, "Todo po match...", Toast.LENGTH_SHORT).show();
+                                        RecyclerView.Adapter adapter = new FlightsAdapter(mTravelModelList);
+                                        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+                                        recyclerView.setLayoutManager(mLayoutManager);
+                                        recyclerView.setItemAnimator(new DefaultItemAnimator());
+                                        recyclerView.setAdapter(adapter);
+
+                                        mTravelModelList.add(travel);
+                                        adapter.notifyDataSetChanged();
+
                                     }
                                 }
 

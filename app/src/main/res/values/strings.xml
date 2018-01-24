@@ -11,6 +11,7 @@
     <string name="search_arrival_value">Arrivée</string>
 
     <string name="search_departure_date">Date de départ</string>
+    <string name="search_arrival_date">Date de retour</string>
     <string name="search_departure_date_value">Sélectionner une date de départ</string>
 
     <string name="search_button">Rechercher un itinéraire</string>
@@ -20,5 +21,12 @@
     <string name="departure_date_error">Veuillez choisir une date de départ</string>
 
     <string name="searched_flight">%1$s_%2$s</string>
+
+    <string name="airline">Compagnie aérienne :</string>
+    <string name="price">Prix :</string>
+    <string name="convert_price">Convertir le prix</string>
+
+    <string name="price_value_dollars">$ %1$s</string>
+    <string name="price_value_euros">%1$s €</string>
 
 </resources>
