@@ -4,7 +4,7 @@
 
     <!-- MainActivity -->
 
-    <string name="search_title">Rechercher un vol (aller-retour uniquement)</string>
+    <string name="search_title">Rechercher un vol</string>
 
     <string name="search_flight">Trajet</string>
     <string name="search_departure_value">Départ</string>
@@ -13,15 +13,12 @@
     <string name="search_departure_date">Date de départ</string>
     <string name="search_departure_date_value">Sélectionner une date de départ</string>
 
-    <string name="search_return_date">Date de retour</string>
-    <string name="search_return_date_value">Sélectionner une date de retour</string>
-
     <string name="search_button">Rechercher un itinéraire</string>
 
     <string name="departure_error">Veuillez choisir un aéroport de départ</string>
     <string name="arrival_error">Veuillez choisir un aéroport d\'arrivée</string>
     <string name="departure_date_error">Veuillez choisir une date de départ</string>
-    <string name="arrival_date_error">Veuillez choisir une date d\'arrivée</string>
-    <string name="slower_than_88_MPH">Vous ne pouvez malheureusement pas arriver avant d\'être parti</string>
+
+    <string name="searched_flight">%1$s_%2$s</string>
 
 </resources>

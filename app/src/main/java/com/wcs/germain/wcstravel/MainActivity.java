@@ -1,6 +1,7 @@
 package com.wcs.germain.wcstravel;
 
 import android.app.DatePickerDialog;
+import android.content.res.Resources;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,16 +20,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
+
+    FirebaseDatabase mDatabase;
 
     private static final String TAG = "FDB";
 
@@ -36,8 +37,6 @@ public class MainActivity extends AppCompatActivity {
     boolean isArrivalOK = false;
 
     boolean isDepartureDateOK = false;
-    boolean isArrivalDateOK = false;
-    boolean isSpeedLessThan88MPH = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
         //*
         //**
         // Write a message to the database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("checkpoint5/students/gcaule");
+        mDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = mDatabase.getReference("checkpoint5/students/gcaule");
 
         // Read from the database
         myRef.addValueEventListener(new ValueEventListener() {
@@ -72,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         final EditText departureDateValue = findViewById(R.id.searchDepartureDateValue);
-        final EditText arrivalDateValue = findViewById(R.id.searchReturnDateValue);
 
         final Button searchFlight = findViewById(R.id.searchButton);
 
@@ -87,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                 myCalendar.set(Calendar.YEAR, year);
                 myCalendar.set(Calendar.MONTH, monthOfYear);
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                String myFormat = "dd/MM/yyyy";
+                String myFormat = "yyyy-MM-dd";
                 SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.FRANCE);
                 departureDateValue.setText(sdf.format(myCalendar.getTime()));
                 isDepartureDateOK = true;
@@ -105,34 +103,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        // Date Picker for return
-        final DatePickerDialog.OnDateSetListener returnDateListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                String myFormat = "dd/MM/yyyy";
-                SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.FRANCE);
-                arrivalDateValue.setText(sdf.format(myCalendar.getTime()));
-                isArrivalDateOK = true;
-            }
-        };
-
-        arrivalDateValue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new DatePickerDialog(MainActivity.this,
-                        android.R.style.Theme_Holo_Light_Dialog, returnDateListener, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-            }
-        });
-
-
         // Populate the spinners for flight selection
-        DatabaseReference airports = database.getReference("checkpoint5");
+        DatabaseReference airports = mDatabase.getReference("checkpoint5");
         airports.child("airports").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -167,40 +139,41 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        final Spinner departureSpinner = findViewById(R.id.departureValue);
+        departureSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapter, View v,int position, long id) {
+                if (position != 0)
+                    isDepartureOK = true;
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+        });
+
+        final Spinner arrivalSpinner = findViewById(R.id.arrivalValue);
+        arrivalSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapter, View v,int position, long id) {
+                if (position != 0)
+                    isArrivalOK = true;
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+        });
+
+
         //Let's rock.
         searchFlight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Spinner departureSpinner = findViewById(R.id.departureValue);
-                departureSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapter, View v,int position, long id) {
-                        if (position != 0)
-                            isDepartureOK = true;
-                    }
-                    @Override
-                    public void onNothingSelected(AdapterView<?> arg0) {
-                    }
-                });
 
                 if (!isDepartureOK) {
                     Toast.makeText(MainActivity.this,
                             getString(R.string.departure_error), Toast.LENGTH_SHORT).show();
                 }
 
-
-                Spinner arrivalSpinner = findViewById(R.id.arrivalValue);
-                arrivalSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapter, View v,int position, long id) {
-                        if (position != 0)
-                            isArrivalOK = true;
-                    }
-                    @Override
-                    public void onNothingSelected(AdapterView<?> arg0) {
-                    }
-                });
 
                 if (!isArrivalOK) {
                     Toast.makeText(MainActivity.this,
@@ -214,33 +187,56 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
-                if (!isArrivalDateOK) {
-                    Toast.makeText(MainActivity.this,
-                            getString(R.string.arrival_date_error), Toast.LENGTH_SHORT).show();
-                }
-
-
-                String myFormat = "dd/MM/yyyy";
-                SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.FRANCE);
-                try {
-                    Date departureDate = sdf.parse(departureDateValue.getText().toString());
-                    Date arrivalDate = sdf.parse(arrivalDateValue.getText().toString());
-
-                    if (departureDate.after(arrivalDate)) {
-                        Toast.makeText(MainActivity.this,
-                                getString(R.string.slower_than_88_MPH), Toast.LENGTH_SHORT).show();
-                    } else {
-                        isSpeedLessThan88MPH = true;
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-
-                if (isDepartureOK && isArrivalOK && isDepartureDateOK
-                        && isArrivalDateOK && isSpeedLessThan88MPH) {
+                if (isDepartureOK && isArrivalOK && isDepartureDateOK) {
                     Toast.makeText(MainActivity.this,
                             "Todo match !", Toast.LENGTH_SHORT).show();
+
+                    String departureBuffer = departureSpinner.getSelectedItem().toString();
+                    departureBuffer = departureBuffer.substring(departureBuffer.length() - 5);
+                    departureBuffer = departureBuffer.substring(1, departureBuffer.length() - 1);
+
+                    String arrivalBuffer = arrivalSpinner.getSelectedItem().toString();
+                    arrivalBuffer = arrivalBuffer.substring(arrivalBuffer.length() - 5);
+                    arrivalBuffer = arrivalBuffer.substring(1, arrivalBuffer.length() - 1);
+
+                    Resources resources = getResources();
+                    String searchedFlight = resources.getString(R.string.searched_flight, departureBuffer, arrivalBuffer);
+
+                    final String flightDate = departureDateValue.getText().toString();
+
+                    Log.d(TAG, "Flight is: " + searchedFlight);
+                    Log.d(TAG, "Date is: " + flightDate);
+
+                    DatabaseReference travels = mDatabase.getReference("checkpoint5/travels");
+                    travels.orderByChild("travel").equalTo(searchedFlight)
+                            .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            if (dataSnapshot.exists()) {
+
+                                for (DataSnapshot travelSnapshot : dataSnapshot.getChildren()) {
+                                    TravelModel travel = travelSnapshot.getValue(TravelModel.class);
+
+                                    if (travel != null && travel.getDeparture_date().equals(flightDate)) {
+                                        Toast.makeText(MainActivity.this, travel.getPrice(),
+                                                Toast.LENGTH_LONG).show();
+
+
+                                    } else {
+                                        Toast.makeText(MainActivity.this, "Todo po match...", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                            } else {
+                                Toast.makeText(MainActivity.this, "Pas de vol !", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError error) {}
+                    });
+
                 }
 
             }
