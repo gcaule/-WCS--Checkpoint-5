@@ -1,0 +1,33 @@
+<resources>
+
+    <string name="app_name">WCSTravel</string>
+
+    <!-- MainActivity -->
+
+    <string name="search_title">Search a flight</string>
+
+    <string name="search_flight">Trip</string>
+    <string name="search_departure_value">Departure</string>
+    <string name="search_arrival_value">Arrival</string>
+
+    <string name="search_departure_date">Departure date :</string>
+    <string name="search_arrival_date">Return date :</string>
+    <string name="search_departure_date_value">Choose a departure date</string>
+
+    <string name="search_button">Search a flight</string>
+    <string name="search_no_flights">No flight found</string>
+
+    <string name="departure_error">Please choose a departure airport</string>
+    <string name="arrival_error">Please choose an arrival airport</string>
+    <string name="departure_date_error">Please choose a departure date</string>
+
+    <string name="searched_flight">%1$s_%2$s</string>
+
+    <string name="airline">Airline :</string>
+    <string name="price">Price :</string>
+    <string name="convert_price">Convert price</string>
+
+    <string name="price_value_dollars">$ %1$s</string>
+    <string name="price_value_euros">%1$s €</string>
+
+</resources>
